@@ -59,36 +59,36 @@ public class NumEncSys {
         }
 
         public static int encrypt(int password) {
-            int swappedPassword = swapDigits(password);//将密码的个位和十位交换位置
+            int swappedPassword = swapDigits(password);
             String swappedPasswordString = String.valueOf(swappedPassword);
 
             StringBuilder encryptedPasswordBuilder = new StringBuilder();
-		//按照加密规则对每个数字操作
+
             for (int i = 0; i < swappedPasswordString.length(); i++) {
                 int digit = Integer.parseInt(String.valueOf(swappedPasswordString.charAt(i)));
-                digit = (digit + 5) % 10;//加上5并对10取余
-                digit = digit * 2;//乘以2
-                encryptedPasswordBuilder.append(digit);//将结果加到加密后的密码中
+                digit = (digit + 5) % 10;
+                digit = digit * 2;
+                encryptedPasswordBuilder.append(digit);
             }
 
-            String encryptedPasswordString = encryptedPasswordBuilder.reverse().toString();//反转密码
-            int encryptedPassword = Integer.parseInt(encryptedPasswordString);//转换为整数形式
+            String encryptedPasswordString = encryptedPasswordBuilder.reverse().toString();
+            int encryptedPassword = Integer.parseInt(encryptedPasswordString);
 
             return encryptedPassword;
         }
 
     public static int decrypt(int encryptedPassword) {
         String encryptedPasswordString = String.valueOf(encryptedPassword);
-        StringBuilder decryptedPasswordBuilder = new StringBuilder(encryptedPasswordString).reverse();//反转密码
-		//按照解密规则依次对每个数字进行解密操作
+        StringBuilder decryptedPasswordBuilder = new StringBuilder(encryptedPasswordString).reverse();
+
         for (int i = 0; i < decryptedPasswordBuilder.length(); i++) {
             int digit = Integer.parseInt(String.valueOf(decryptedPasswordBuilder.charAt(i)));
-            digit = digit / 2;将每位数字除以2
-            digit = (digit - 5 + 10) % 10;//将数字-5+10对10取余
-            decryptedPasswordBuilder.setCharAt(i, Character.forDigit(digit, 10));//更新解密后的密码
+            digit = digit / 2;
+            digit = (digit - 5 + 10) % 10;
+            decryptedPasswordBuilder.setCharAt(i, Character.forDigit(digit, 10));
         }
 
-        String decryptedPasswordString = decryptedPasswordBuilder.reverse().toString();//将密码的个位和十位交换位置
+        String decryptedPasswordString = decryptedPasswordBuilder.reverse().toString();
         int decryptedPassword = Integer.parseInt(decryptedPasswordString);
 
         return decryptedPassword;
@@ -101,7 +101,7 @@ public class NumEncSys {
             }
 
             char[] digits = passwordString.toCharArray();
-		//交换密码的个位和十位
+
             char temp = digits[0];
             digits[0] = digits[1];
             digits[1] = temp;
