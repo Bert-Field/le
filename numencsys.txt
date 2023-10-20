@@ -1,114 +1,118 @@
 import java.util.Scanner;
-public class NumEncSys {
-        public static void main(String[] args) {
-            Scanner scanner = new Scanner(System.in);
 
-            System.out.println("=== 密码加密解密系统 ===");
-
-            int choice;
-            do {
-                printMenu();
-                System.out.print("请选择操作：");
-                choice = scanner.nextInt();
-
-                switch (choice) {
-                    case 1:
-                        encryptPassword(scanner);
-                        break;
-                    case 2:
-                        decryptPassword(scanner);
-                        break;
-                    case 3:
-                        System.out.println("感谢使用密码加密解密系统，再见！");
-                        break;
-                    default:
-                        System.out.println("无效的选择！请重新选择操作。");
-                        break;
-                }
-            } while (choice != 3);
-
-            scanner.close();
-        }
-
-        public static void printMenu() {
-            System.out.println("请选择操作：");
-            System.out.println("1. 加密密码");
-            System.out.println("2. 解密密码");
-            System.out.println("3. 退出系统");
-        }
-
-        public static void encryptPassword(Scanner scanner) {
-            System.out.print("请输入一个数字密码（大于0）：");
-            int password = scanner.nextInt();
-
-            if (password <= 0) {
-                System.out.println("无效的密码！请重新输入。");
-                return;
+public class PasswordEncryptionSystem {
+    
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("=== 密码加密解密系统 ===");
+        
+        int choice;
+        do {
+            printMenu();
+            System.out.print("请选择操作：");
+            choice = scanner.nextInt();
+            
+            switch (choice) {
+                case 1:
+                    encryptPassword(scanner);
+                    break;
+                case 2:
+                    decryptPassword(scanner);
+                    break;
+                case 3:
+                    System.out.println("感谢使用密码加密解密系统，再见！");
+                    break;
+                default:
+                    System.out.println("无效的选择！请重新选择操作。");
+                    break;
             }
-
-            int encryptedPassword = encrypt(password);
-            System.out.println("加密后的密码为：" + encryptedPassword);
+        } while (choice != 3);
+        
+        scanner.close();
+    }
+    
+    public static void printMenu() {
+        System.out.println("请选择操作：");
+        System.out.println("1. 加密密码");
+        System.out.println("2. 解密密码");
+        System.out.println("3. 退出系统");
+    }
+    
+    public static void encryptPassword(Scanner scanner) {
+        System.out.print("请输入一个数字密码（大于0）：");
+        int password = scanner.nextInt();
+        
+        if (password <= 0) {
+            System.out.println("无效的密码！请重新输入。");
+            return;
         }
-
-        public static void decryptPassword(Scanner scanner) {
-            System.out.print("请输入加密后的数字密码：");
-            int encryptedPassword = scanner.nextInt();
-
-            int decryptedPassword = decrypt(encryptedPassword);
-            System.out.println("解密后的密码为：" + decryptedPassword);
+        
+        int encryptedPassword = encrypt(password);
+        System.out.println("加密后的密码为：" + encryptedPassword);
+    }
+    
+    public static void decryptPassword(Scanner scanner) {
+        System.out.print("请输入加密后的数字密码：");
+        int encryptedPassword = scanner.nextInt();
+        
+        int decryptedPassword = decrypt(encryptedPassword);
+        System.out.println("解密后的密码为：" + decryptedPassword);
+    }
+    
+    public static int encrypt(int password) {
+        int swappedPassword = swapDigits(password); // 将密码的个位和十位交换位置
+        String swappedPasswordString = String.valueOf(swappedPassword);
+        
+        StringBuilder encryptedPasswordBuilder = new StringBuilder();
+        
+        // 按照加密规则依次对每个数字进行加密操作
+        for (int i = 0; i < swappedPasswordString.length(); i++) {
+            int digit = Integer.parseInt(String.valueOf(swappedPasswordString.charAt(i)));
+            digit = (digit + 5) % 10; // 加上5并对10取余
+            digit = digit * 2; // 乘以2
+            encryptedPasswordBuilder.append(digit); // 将结果追加到加密后的密码中
         }
-
-        public static int encrypt(int password) {
-            int swappedPassword = swapDigits(password);
-            String swappedPasswordString = String.valueOf(swappedPassword);
-
-            StringBuilder encryptedPasswordBuilder = new StringBuilder();
-
-            for (int i = 0; i < swappedPasswordString.length(); i++) {
-                int digit = Integer.parseInt(String.valueOf(swappedPasswordString.charAt(i)));
-                digit = (digit + 5) % 10;
-                digit = digit * 2;
-                encryptedPasswordBuilder.append(digit);
-            }
-
-            String encryptedPasswordString = encryptedPasswordBuilder.reverse().toString();
-            int encryptedPassword = Integer.parseInt(encryptedPasswordString);
-
-            return encryptedPassword;
-        }
-
-    public static int decrypt(int encryptedPassword) {
-        String encryptedPasswordString = String.valueOf(encryptedPassword);
-        StringBuilder decryptedPasswordBuilder = new StringBuilder(encryptedPasswordString).reverse();
-
+        
+        String encryptedPasswordString = encryptedPasswordBuilder.reverse().toString(); // 反转密码
+        int encryptedPassword = Integer.parseInt(encryptedPasswordString); // 转换为整数形式
+        
+        return encryptedPassword;
+    }
+    
+    public static int decrypt(int password) {
+        String passwordString = String.valueOf(password);
+        StringBuilder decryptedPasswordBuilder = new StringBuilder(passwordString).reverse(); // 反转密码
+        
+        // 按照解密规则依次对每个数字进行解密操作
         for (int i = 0; i < decryptedPasswordBuilder.length(); i++) {
             int digit = Integer.parseInt(String.valueOf(decryptedPasswordBuilder.charAt(i)));
-            digit = digit / 2;
-            digit = (digit - 5 + 10) % 10;
-            decryptedPasswordBuilder.setCharAt(i, Character.forDigit(digit, 10));
+            digit = (digit / 2 + 5) % 10; // 将每位数字除以2加上5取余
+            decryptedPasswordBuilder.setCharAt(i, Character.forDigit(digit, 10)); // 更新解密后的密码
         }
-
-        String decryptedPasswordString = decryptedPasswordBuilder.reverse().toString();
-        int decryptedPassword = Integer.parseInt(decryptedPasswordString);
-
+        
+        int decryptedPassword = swapDigits(Integer.parseInt(decryptedPasswordBuilder.toString())); // 将密码的个位和十位交换位置
+        
         return decryptedPassword;
     }
-        public static int swapDigits(int password) {
-            String passwordString = String.valueOf(password);
-
-            if (passwordString.length() < 2) {
-                return password;
-            }
-
-            char[] digits = passwordString.toCharArray();
-
-            char temp = digits[0];
-            digits[0] = digits[1];
-            digits[1] = temp;
-
-            String swappedPasswordString = new String(digits);
-            int swappedPassword = Integer.parseInt(swappedPasswordString);
-
-            return swappedPassword;
+    
+    public static int swapDigits(int password) {
+        String passwordString = String.valueOf(password);
+        
+        if (passwordString.length() < 2) {
+            return password;
         }
+        
+        char[] digits = passwordString.toCharArray();
+        
+        // 交换密码的个位和十位
+        char temp = digits[0];
+        digits[0] = digits[1];
+        digits[1] = temp;
+        
+        String swappedPasswordString = new String(digits);
+        int swappedPassword = Integer.parseInt(swappedPasswordString);
+        
+        return swappedPassword;
     }
+}
